@@ -1,4 +1,5 @@
 import accounts from "./accounts.mjs"
+import accountsUpdated from "./accountsUpdated.mjs"
 
 // // Define a function that returns an array containing all of the ip4 addresses. The function should accept the accounts array as input. 
 
@@ -133,54 +134,104 @@ import accounts from "./accounts.mjs"
 
 
 
+// /*
+//     Define a function that sorts the accounts by the last
+//     login date and returns the most recent login. The
+//     function should accept the accounts array as input.
+// */
+// const months = {
+//     "Jan": 1,
+//     "Feb": 2,
+//     "Mar": 3,
+//     "Apr": 4,
+//     "May": 5, 
+//     "Jun": 6,
+//     "Jul": 7,
+//     "Aug": 8,
+//     "Sep": 9,
+//     "Oct": 10,
+//     "Nov": 11,
+//     "Dec": 12
+// }
+
+// const numericalLogins = []
+// function sortDateStringsAsIntegers (accountArray) {
+//     accountArray.forEach((user, idx) => {
+//         let lastLogin = user.last_login.date_time.split(" ")
+//         if (lastLogin.length === 7) {
+//             lastLogin.splice(2, 1)
+//         }
+//         let year = parseInt(lastLogin[5])
+//         let month = parseInt(months[lastLogin[1]])+100
+//         let day = parseInt(lastLogin[2])+100
+//         let time = lastLogin[3]
+//         let hour = parseInt(time.split(":")[0])+100
+//         let min = parseInt(time.split(":")[1])+100
+//         let sec = parseInt(time.split(":")[2])+100
+//         let userLastLoginNumber = [year, month, day, hour, min, sec].join("")
+//         let userDateArray = [userLastLoginNumber, idx]
+//         numericalLogins.push(userDateArray)
+//     });
+//     return numericalLogins.sort()
+
+// }
+
+// function sortUserLastLogins(accountArray){
+//     let sortedArray = sortDateStringsAsIntegers(accountArray)
+//     let mostRecentLoginIndex = sortedArray[sortedArray.length-1][1]
+//     let mostRecentUser = accountArray[mostRecentLoginIndex].id
+//     let mostRecentLogin = accountArray[mostRecentLoginIndex].last_login.date_time   
+//     console.log( `${mostRecentUser} logged in most recently on ${mostRecentLogin}`)
+// }
+
+// sortUserLastLogins(accounts)
+
+
+// // **********Kirren's answer:*************************
+// const lastLogin = (accountsArray) => {
+//     return accountsArray.map(account => account.last_login.date_time)
+//     .sort((a, b) => {
+//         let currentDate = new Date(a);
+//         let previousDate = new Date(b);
+//         if (currentDate === previousDate) {
+//             return 0;
+//         } else if (currentDate < previousDate) {
+//             return 1;
+//         } else {
+//             return -1;
+//         }
+//     })[0];
+// }
+
+// console.log(lastLogin(accounts))
+
+
+
+
+// *************NEW PROBLEM***************************
 /*
-    Define a function that sorts the accounts by the last
-    login date and returns the most recent login. The
-    function should accept the accounts array as input.
+    Define a function that returns the median age of all
+    the accounts. The function should accept the accounts
+    array as input. Use the reduce() method.
 */
-const months = {
-    "Jan": 1,
-    "Feb": 2,
-    "Mar": 3,
-    "Apr": 4,
-    "May": 5, 
-    "Jun": 6,
-    "Jul": 7,
-    "Aug": 8,
-    "Sep": 9,
-    "Oct": 10,
-    "Nov": 11,
-    "Dec": 12
-}
 
-const numericalLogins = []
-function sortDateStringsAsIntegers (accountArray) {
-    accountArray.forEach((user, idx) => {
-        let lastLogin = user.last_login.date_time.split(" ")
-        if (lastLogin.length === 7) {
-            lastLogin.splice(2, 1)
-        }
-        let year = parseInt(lastLogin[5])
-        let month = parseInt(months[lastLogin[1]])+100
-        let day = parseInt(lastLogin[2])+100
-        let time = lastLogin[3]
-        let hour = parseInt(time.split(":")[0])+100
-        let min = parseInt(time.split(":")[1])+100
-        let sec = parseInt(time.split(":")[2])+100
-        let userLastLoginNumber = [year, month, day, hour, min, sec].join("")
-        let userDateArray = [userLastLoginNumber, idx]
-        numericalLogins.push(userDateArray)
+function sortAges(array) {
+    let sortedAges = []
+    array.forEach(account => {
+        sortedAges.push(account.account_age)
     });
-    return numericalLogins.sort()
-
+    return sortedAges.sort()
 }
 
-function sortUserLastLogins(accountArray){
-    let sortedArray = sortDateStringsAsIntegers(accountArray)
-    let mostRecentLoginIndex = sortedArray[sortedArray.length-1][1]
-    let mostRecentUser = accountArray[mostRecentLoginIndex].id
-    let mostRecentLogin = accountArray[mostRecentLoginIndex].last_login.date_time   
-    console.log( `${mostRecentUser} logged in most recently on ${mostRecentLogin}`)
+function returnMedAge(array) {
+    return (array[parseInt(Math.floor((array.length) / 2))])
 }
+// creates a "pipeline of function" to reduce over
+const pipeline = [sortAges, returnMedAge]
 
-sortUserLastLogins(accounts)
+// says (i think?) that we are going to insert an array in each function, then initiates the reduce with accountsUpdated as the initial value. First "func" is sortAges which produces a new array, which is passed into returnMedAge, which then outputs the final value? maybe?
+const medAge = pipeline.reduce(function (array, func) {
+    return func(array)
+}, accountsUpdated)
+
+console.log(medAge)
